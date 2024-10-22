@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Variables
+RESOURCE_GROUP="MyResourceGroup"
+LOCATION="northcentralus"  # Use lowercase for Azure locations
+VM_NAME="MyVM"
+IMAGE="Ubuntu2204"  # Change to your preferred image
+SIZE="Standard_D2s_v3"  # Change to your preferred size
+ADMIN_USERNAME="azureuser"
+SSH_KEY_PATH="$HOME/.ssh/id_rsa"
+
+# Check if SSH key exists, if not, generate one
+if [ ! -f "$SSH_KEY_PATH" ]; then
+    echo "SSH key not found, generating a new one..."
+    ssh-keygen -t rsa -b 2048 -f "$SSH_KEY_PATH" -N ""
+else
+    echo "Using existing SSH key."
+fi
+
+# Create Resource Group
+echo "Creating Resource Group..."
+az group create --name "$RESOURCE_GROUP" --location "$LOCATION"
+
+# Create Virtual Machine and capture output
+echo "Creating Virtual Machine..."
+VM_OUTPUT=$(az vm create \
+  --resource-group "$RESOURCE_GROUP" \
+  --name "$VM_NAME" \
+  --image "$IMAGE" \
+  --size "$SIZE" \
+  --admin-username "$ADMIN_USERNAME" \
+  --ssh-key-value "$SSH_KEY_PATH.pub" \
+  --output json)

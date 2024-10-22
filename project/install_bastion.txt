@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Update package index
+sudo apt update
+
+# Install Git and Unzip
+echo "Installing Git and Unzip..."
+sudo apt install -y git unzip
+
+# Install Terraform
+echo "Installing Terraform..."
+TERRAFORM_VERSION="1.5.5"  # Change this to the latest version if needed
+wget "https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip" -O terraform.zip
+unzip terraform.zip
+sudo mv terraform /usr/local/bin/
+rm terraform.zip
+
+# Install Azure CLI
+echo "Installing Azure CLI..."
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Verify installations
+echo "Verifying installations..."
+git --version
+terraform --version
+az --version
+
+echo "Installation complete!"
